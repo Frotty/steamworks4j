@@ -4,15 +4,15 @@ layout: default
 
 ## About
 
-The *steamworks4j* library allows Java applications to access the Steamworks C++ API. It can be easily integrated with other frameworks, such as [libGDX](http://libgdx.badlogicgames.com/), [LWJGL](http://www.lwjgl.org/) or [Slick2D](http://slick.ninjacave.com/).
+The *steamworks4j* library enables Java applications to access the Steamworks C++ API. It can be easily integrated with other frameworks, such as [libGDX](http://libgdx.badlogicgames.com/) or [LWJGL](http://www.lwjgl.org/).
 
 ### Introduction
 
-The wrapper is written as minimal as possible without sacrificing ease of use. Its goal is to provide *just* an accessible Java API to Valve's C++ interfaces.
+The Java wrapper is written as minimal as possible without sacrificing ease of use. Its goal is to provide *just* an accessible Java API to Valve's C++ interfaces.
 
-The *public* Java interfaces are - more or less - 1:1 mapped to their native counterparts, as long as it doesn't impede usability and type safety. In general, each public function does simple Java to C++ type conversion only, then calls its native function.
+The *public* Java interfaces are - more or less - 1:1 mapped to the native API, as long as this doesn't impede usability and type safety. In general, all public functions do simple Java to C++ type conversion only, then call their native counterparts.
 
-Callbacks are dealt with in a similar manner. Native callbacks are received by *package private* callback adapters, which only do type conversion, then forward the callback to their *public* Java interface.
+Callbacks are dealt with in a similar manner. Native callbacks are received by *package private* callback adapters, which only do type conversion, then forward the callback to their *public* callback interface.
 
 ### Technical limitations
 
@@ -24,19 +24,23 @@ The prebuilt native libraries of *steamworks4j* are currently compiled with Stea
 
 #### Java version
 
-The Java code compiles with Java language level 7.
+The Java code compiles with Java language level 8.
 
 #### Mac OS
 
-MacOS 64-bit is supported on OS X 10.9 and later. Support for 32-bit via universal binaries has been dropped in *steamworks4j* v1.8.0.
+MacOS 64-bit on OS X 10.9 and later. Starting with *steamworks4j* v1.10.0, binaries support both x86_64 and arm64 architectures.
+
+Support for 32-bit has been dropped since *steamworks4j* v1.8.0.
 
 #### Linux
 
-Linux 64-bit is supported. Support for 32-bit versions has been dropped in *steamworks4j* v1.7.0.
+Linux 64-bit only.
+
+Support for 32-bit has been dropped since *steamworks4j* v1.7.0.
 
 #### Windows
 
-Both 32-bit and 64-bit versions are supported.
+Both 32 and 64-bit.
 
 ### Copyright notice
 

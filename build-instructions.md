@@ -6,7 +6,7 @@ layout: default
 
 ### Steamworks SDK
 
-Starting with *steamworks4j* v1.7.0, the SDK is required to build/package from source. Download the latest Steamworks SDK, then unzip and copy the following folders into the **steamworks4j/** root directory:
+The Steamworks C++ SDK is required to build from source. Download the latest version, then unzip and copy the following folders into the **steamworks4j/** root directory:
 
 - *steamworks4j/*
     - *sdk/*
@@ -17,7 +17,7 @@ Starting with *steamworks4j* v1.7.0, the SDK is required to build/package from s
 
 #### Build development versions
 
-Just use Maven with ```mvn package``` in the root directory to compile a jar ready to be used in your application, or ```mvn install``` to deploy it to your local Maven cache.
+Just use Maven with ```mvn package``` in the root directory to compile JAR packages ready to use in your application, or ```mvn install``` to deploy them to your local Maven cache.
 
 During the compile phase, the Maven build pulls shared libraries out of the *sdk/redistributable_bin/* folder and adds them as resources to the *steamworks4j* module. For copyright reasons, this is **not** done for *steamworks4j-server* and the *sdkencryptedappticket* library. If you want to create such a package, this can be enforced manually with ```mvn package -Plibs```.
 
@@ -28,10 +28,12 @@ You can use these profiles to simulate the commands I use to deploy new versions
 ```
 # snapshot
 mvn install -Psnapshot,libs -pl java-wrapper
+mvn install -Psnapshot -pl loader/gdx,loader/lwjgl3
 mvn install -Psnapshot -pl server
 
 # release
 mvn install -Prelease,libs -pl java-wrapper
+mvn install -Prelease -pl loader/gdx,loader/lwjgl3
 mvn install -Prelease -pl server
 ```
 
@@ -39,18 +41,18 @@ mvn install -Prelease -pl server
 
 #### Prebuilt native libraries
 
-You *do not need* to build the native libraries yourself if you don't plan to *modify* the native code of *steamworks4j*. There are prebuilt versions provided as resources of *steamworks4j* and *steamworks4j-server*.
+You *do not need* to build the native libraries yourself if you don't plan to *modify* native code of *steamworks4j*. There are prebuilt versions provided as resources of *steamworks4j* and *steamworks4j-server*.
 
 #### External dependencies
 
-[jnigen](https://github.com/libgdx/libgdx/wiki/jnigen) is used to generate parts of the native code, and [premake4/5](http://industriousone.com/premake) to compile native code into dynamic libraries.
+[gdx-jnigen](https://github.com/libgdx/gdx-jnigen) is used to generate native code, and [premake4/5](http://industriousone.com/premake) to compile native code into dynamic libraries.
 
 #### Build environments
 
 - Windows
 
   - A **Visual Studio 2017/2019/2022** command line environment must be available. It's sufficient to use the Community editions. For Visual Studio 2022, the default script to setup the build environment is *c:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat*
-  - **premake5.exe** (version 5.0.0-beta1) must be available in the path, e.g. in the ```steamworks4j/build-natives/``` folder.
+  - **premake5.exe** (version 5.0.0-beta2) must be available in %PATH% or in the ```steamworks4j/build-natives/``` folder.
 
 - Linux
 
@@ -64,7 +66,7 @@ You *do not need* to build the native libraries yourself if you don't plan to *m
 
 ### Build steps
 
-The first step is to let [jnigen](https://github.com/libgdx/libgdx/wiki/jnigen) generate C++ source files for the embedded JNI functions. The `com.codedisaster.steamworks.jnigen.JNICodeGenerator` class in the `jnigen` sub-project contains the code to do that.
+The first step is to let gdx-jnigen generate C++ source files for the embedded JNI functions. The `com.codedisaster.steamworks.jnigen.JNICodeGenerator` class in the `jnigen` sub-project contains the code to do that.
 
 - The working directory must be the ```steamworks4j/``` root folder.
 - You can just run `JNICodeGenerator.main()` as a plain Java application from inside your favorite IDE. No arguments are required.
