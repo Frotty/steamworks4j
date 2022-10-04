@@ -61,7 +61,7 @@ If you don't use any build tools, [direct downloads of .jar files](http://mvnrep
 
 #### Snapshot versions
 
-I've started releasing snapshot builds on [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/).
+I've started releasing snapshot builds on [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/com/code-disaster/steamworks4j/).
 
 Maven:
 
