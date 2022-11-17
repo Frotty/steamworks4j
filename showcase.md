@@ -61,7 +61,7 @@ My - undoubtedly dictatorial - list of "favorite" games which look cool, and/or 
 ---
 
 ![Delver](images/showcase_delver.png)
-<br>[Delver](http://store.steampowered.com/app/249630/) by 	[Priority Interrupt][priorityinterrupt]
+<br>[Delver](http://store.steampowered.com/app/249630/) by [Priority Interrupt][priorityinterrupt]
 
 ---
 
@@ -106,6 +106,7 @@ A list in alphabetical order, of other games I known to utilize *steamworks4j*. 
 | [Don't Chat With Strangers](http://store.steampowered.com/app/533170/) | Bartosz Bojarowski |
 | [The Dungeoning](http://store.steampowered.com/app/295870/) | Nick Donnelly |
 | [Fantasy Tales Online](http://store.steampowered.com/app/442710/) | Cold Tea Studio |
+| [EndCycle VS](https://store.steampowered.com/app/886200/) | 12B3 |
 | [Flat Path](http://store.steampowered.com/app/512740/) | GooDCrafter |
 | [Hidden Dimensions 3](http://store.steampowered.com/app/531540/) | Stijn Van Cauter |
 | [Howard Phillips Lovecar](http://store.steampowered.com/app/644370/) | The Secret Pie |
@@ -120,6 +121,7 @@ A list in alphabetical order, of other games I known to utilize *steamworks4j*. 
 | [Prompt](http://store.steampowered.com/app/366590/) | Peter Gutenko |
 | [qb](http://store.steampowered.com/app/601400/) | Armadillo Studios |
 | [Quarries of Scred](http://store.steampowered.com/app/346770/) | [Hammerspace Games][hammerspacegames] |
+| [Quatris](https://store.steampowered.com/app/888140/) | Postcursor Laboratories |
 | [RFLEX](http://store.steampowered.com/app/392020/) | [Wesley LaFerriere][rflex] |
 | [Rising World](http://store.steampowered.com/app/324080/) | JIW-Games |
 | [Senalux](http://store.steampowered.com/app/654580/) | Pixel with Hat |
@@ -129,6 +131,7 @@ A list in alphabetical order, of other games I known to utilize *steamworks4j*. 
 | [Spermination](http://store.steampowered.com/app/363460/) | [Phr00t][phr00t] |
 | [Super Pixalo](http://store.steampowered.com/app/347480/) | Philip Royer |
 | [Tomb of Tyrants](http://store.steampowered.com/app/340360/) | Jake Huhman |
+| [Wildermyth](https://store.steampowered.com/app/763890/) | Worldwalker Games LLC |
 
 [baroquedecay]: http://www.thecountlucanor.com
 [battlebardgames]: http://battlebardgames.com
