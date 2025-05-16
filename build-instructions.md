@@ -26,15 +26,8 @@ During the compile phase, the Maven build pulls shared libraries out of the *sdk
 You can use these profiles to simulate the commands I use to deploy new versions:
 
 ```
-# snapshot
-mvn install -Psnapshot,libs -pl java-wrapper
-mvn install -Psnapshot -pl loader/gdx,loader/lwjgl3
-mvn install -Psnapshot -pl server
-
-# release
-mvn install -Prelease,libs -pl java-wrapper
-mvn install -Prelease -pl loader/gdx,loader/lwjgl3
-mvn install -Prelease -pl server
+mvn install -Plibs -pl java-wrapper
+mvn install -pl server,loader/gdx,loader/lwjgl3
 ```
 
 ### Native libraries
@@ -51,7 +44,7 @@ You *do not need* to build the native libraries yourself if you don't plan to *m
 
 - Windows
 
-  - A **Visual Studio 2017/2019/2022** command line environment must be available. It's sufficient to use the Community editions. For Visual Studio 2022, the default script to setup the build environment is *c:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat*
+  - A **Visual Studio 2019/2022** command line environment must be available. It's sufficient to use the Community editions. For Visual Studio 2022, the default script to setup the build environment is *c:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat*
   - **premake5.exe** (version 5.0.0-beta2) must be available in %PATH% or in the ```steamworks4j/build-natives/``` folder.
 
 - Linux

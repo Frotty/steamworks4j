@@ -57,18 +57,18 @@ implementation "com.code-disaster.steamworks4j:steamworks4j-lwjgl3:{{ site.steam
 implementation "com.code-disaster.steamworks4j:steamworks4j-server:{{ site.steamworks4j.version }}"
 {% endhighlight groovy %}
 
-If you don't use any build tools, [direct downloads of .jar files](http://mvnrepository.com/artifact/com.code-disaster.steamworks4j/) are also available.
+If you don't use any build tools, [direct downloads of .jar files](https://central.sonatype.com/search?namespace=com.code-disaster.steamworks4j) are also available.
 
 #### Snapshot versions
 
-I've started releasing snapshot builds on [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/com/code-disaster/steamworks4j/).
+Snapshot builds of the latest version may be available on [Maven Central](https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/com/code-disaster/steamworks4j/) too.
 
 Maven:
 
 {% highlight xml %}
 <repositories>
   <repository>
-    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
     <snapshots>
       <enabled>true</enabled>
     </snapshots>
@@ -104,7 +104,7 @@ Gradle:
 {% highlight groovy %}
 repositories {
     maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
+        url "https://central.sonatype.com/repository/maven-snapshots/"
     }
 }
 
@@ -233,7 +233,7 @@ try {
         // Failed to load native libraries
     }
     if (!SteamGameServerAPI.init((127 << 24) + 1, (short) 27016, (short) 27017,
-        SteamGameServerAPI.ServerMode.NoAuthentication, "0.0.1"))) {
+        SteamGameServerAPI.ServerMode.NoAuthentication, "0.0.1")) {
         // initialization error
     }
 } catch (SteamException e) {
