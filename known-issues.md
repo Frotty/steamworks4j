@@ -30,5 +30,5 @@ patchelf --set-soname libsdkencryptedappticket.so libsdkencryptedappticket.so
 After that, you can copy this library to your resource path, or use Maven to package a version of *steamworks4j-server* with all libraries included:
 
 {% highlight shell %}
-mvn [package|install] -pl server -Plibs
+mvn [package|install] -Plibs -pl server
 {% endhighlight %}
