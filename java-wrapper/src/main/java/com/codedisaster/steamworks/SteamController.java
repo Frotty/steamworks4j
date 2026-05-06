@@ -453,7 +453,6 @@ public class SteamController extends SteamInterface {
 		PS5_LeftFn,
 		PS5_RightFn,
 
-
 		Horipad_M1,
 		Horipad_M2,
 		Horipad_L4,
@@ -467,7 +466,7 @@ public class SteamController extends SteamInterface {
 		LenovoLegionGo_RB,
 		LenovoLegionGo_Menu,
 		LenovoLegionGo_View,
-		LenovoLegionGo_LeftPad_Touch,  // Left pad is only present on the original Legion Go
+		LenovoLegionGo_LeftPad_Touch,
 		LenovoLegionGo_LeftPad_Swipe,
 		LenovoLegionGo_LeftPad_Click,
 		LenovoLegionGo_LeftPad_DPadNorth,

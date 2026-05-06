@@ -135,6 +135,7 @@ public enum SteamResult {
 	NotSupported(128),
 	FamilySizeLimitExceeded(129),
 	OfflineAppCacheInvalid(130),
+	TryLater(131),
 
 	/**
 	 * If this is returned(), we missed to "port" a Steam error code above.
