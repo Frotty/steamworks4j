@@ -47,9 +47,9 @@ public class SteamNetworkingSockets extends SteamInterface {
 
         @Override
         public boolean equals(Object o) {
-            if (!(o instanceof Connection)) return false;
+            if (!(o instanceof Socket)) return false;
 
-            Connection that = (Connection) o;
+            Socket that = (Socket) o;
             return handle == that.handle;
         }
 
