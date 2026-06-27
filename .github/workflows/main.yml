@@ -37,12 +37,13 @@ jobs:
         distribution: 'zulu'
         java-version: '21'
         cache: 'maven'
-    # -Dgpg.skip=true: the pom signs artifacts for Maven Central, but CI has no GPG key and doesn't publish here -
-    # it only needs the jars + jnigen output. -DskipTests: wrapper tests would need the natives/Steam, not built yet.
-    - name: Install java-wrapper
-      run: mvn -B install -Dgpg.skip=true -DskipTests --file java-wrapper/pom.xml
-    - name: Install server
-      run: mvn -B install -Dgpg.skip=true -DskipTests --file server/pom.xml
+    # One reactor build so inter-module deps resolve from the reactor: `server` depends on the `java-wrapper`
+    # (steamworks4j) SNAPSHOT, and building them via separate --file invocations made Maven look for that SNAPSHOT in
+    # a remote repo (central-portal-snapshots) and fail. A root build builds + installs every module in order.
+    # -Dgpg.skip=true: the pom signs for Maven Central, but CI has no key and doesn't publish here. -DskipTests:
+    # wrapper tests would need the natives/Steam, not built yet.
+    - name: Build + install all modules (reactor handles inter-module deps)
+      run: mvn -B install -Dgpg.skip=true -DskipTests
     - name: Package jnigen
       run: mvn -B package -Dgpg.skip=true -DskipTests --file jnigen/pom.xml
     - name: Run jnigen
