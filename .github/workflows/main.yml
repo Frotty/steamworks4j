@@ -18,14 +18,19 @@ on:
   workflow_dispatch: {}
 
 env:
-  SDK: 3ed0ffc6f533cb006e5f8d0cd16cf6327fc0b198
+  # rlabrecque/SteamworksSDK mirrors each SDK release as a commit on `main` (no tags). The old pin 3ed0ffc6... was
+  # SDK 1.57, which is too OLD for this wrapper: it uses SteamAPI_InitEx (SDK 1.59), DismissGamepadTextInput (~1.59),
+  # ISteamUGC::GetNumSubscribedItems(bool) + GetSubscribedItems(...) new signatures (SDK 1.60), and
+  # SteamUGCDetails_t::m_ulTotalFilesSize (~1.58). This is the current `main` HEAD (the latest mirrored SDK), which
+  # has them all. Pinned to a commit for reproducibility - bump it to track newer SDKs.
+  SDK: be6107f4b75bf996531415c53a6488a33a2a1be3
 jobs:
   jnigen:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v4
-    - name: Checkout Steamworks SDK 1.57
+    - name: Checkout Steamworks SDK (latest mirrored)
       uses: actions/checkout@v4
       with:
         repository: rlabrecque/SteamworksSDK
@@ -64,7 +69,7 @@ jobs:
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v4
-    - name: Checkout Steamworks SDK 1.57
+    - name: Checkout Steamworks SDK (latest mirrored)
       uses: actions/checkout@v4
       with:
         repository: rlabrecque/SteamworksSDK
@@ -101,7 +106,7 @@ jobs:
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v4
-    - name: Checkout Steamworks SDK 1.57
+    - name: Checkout Steamworks SDK (latest mirrored)
       uses: actions/checkout@v4
       with:
         repository: rlabrecque/SteamworksSDK
@@ -142,7 +147,7 @@ jobs:
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v4
-    - name: Checkout Steamworks SDK 1.57
+    - name: Checkout Steamworks SDK (latest mirrored)
       uses: actions/checkout@v4
       with:
         repository: rlabrecque/SteamworksSDK
