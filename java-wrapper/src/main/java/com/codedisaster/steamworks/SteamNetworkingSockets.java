@@ -298,6 +298,15 @@ public class SteamNetworkingSockets extends SteamInterface {
         super(SteamNetworkingSocketsNative.createCallback(new SteamNetworkingSocketsCallbackAdapter(callback)));
     }
 
+    /**
+     * Begin fetching the Steam relay network (SDR) configuration. Call ONCE at startup, well before the first
+     * {@link #connectP2P} / {@link #createListenSocketP2P}, so the relay route is ready and the first P2P connection
+     * does not stall while it bootstraps the relay. Wraps {@code ISteamNetworkingUtils::InitRelayNetworkAccess()}.
+     */
+    public void initRelayNetworkAccess() {
+        SteamNetworkingSocketsNative.initRelayNetworkAccess();
+    }
+
     public Connection connectP2P(SteamID steamID, int virtualPort){
         int result = SteamNetworkingSocketsNative.connectP2P(steamID.handle, virtualPort);
         return new Connection(result);
@@ -375,6 +384,16 @@ public class SteamNetworkingSockets extends SteamInterface {
     public SteamResult flushMessages(Connection connection) {
         int result = SteamNetworkingSocketsNative.flushMessages(connection.handle);
         return SteamResult.byValue(result);
+    }
+
+    /**
+     * The current estimated round-trip ping to the peer in milliseconds, or {@code -1} if not yet available (e.g.
+     * the connection has not measured it yet). Wraps {@code ISteamNetworkingSockets::GetConnectionRealTimeStatus} and
+     * returns {@code SteamNetConnectionRealTimeStatus_t::m_nPing}. Used by the co-op lockstep to size its input delay
+     * to the actual connection latency.
+     */
+    public int getConnectionPing(Connection connection) {
+        return SteamNetworkingSocketsNative.getConnectionPing(connection.handle);
     }
 
     /**

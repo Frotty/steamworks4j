@@ -1,0 +1,128 @@
+name: Build natives & publish Maven repo
+
+# Builds the JNI natives on each OS (they can only be built on their own platform), packages the java-wrapper +
+# gdx-loader jars with all natives bundled, and publishes a Maven-layout repo to GitHub Pages so downstream projects
+# can consume the fork with a plain maven { url } and NO token (Pages is public; the fork repo is public).
+#
+# SETUP (one-time):
+#  1. The Steamworks SDK is license-restricted and too big for a 48 KB Actions secret, so store it in a PRIVATE repo
+#     (e.g. <owner>/steamworks-sdk) containing the SDK unzipped at its root (so `sdk/public/steam/steam_api.h` and
+#     `sdk/redistributable_bin/...` exist). Add a repo/secret here:
+#       - secret SDK_REPO  = "<owner>/steamworks-sdk"
+#       - secret SDK_REPO_TOKEN = a PAT (classic: repo scope; or fine-grained: read contents of that repo)
+#  2. Settings -> Pages -> Source = "GitHub Actions" (or branch gh-pages). The peaceiris action below pushes gh-pages.
+#  3. Run this workflow (Actions tab -> Run workflow). Bump the fork version when the native ABI changes.
+#
+# Downstream (oxrox-client): maven { url = "https://<owner>.github.io/steamworks4j" } and depend on the published
+# version; then delete the in-repo vendor/maven. See AGENTS.md section 22.
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  natives:
+    name: Build native (${{ matrix.tag }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, tag: win,   files: "java-wrapper/src/main/resources/steamworks4j.dll java-wrapper/src/main/resources/steamworks4j64.dll" }
+          - { os: macos-latest,   tag: osx,   files: "java-wrapper/src/main/resources/libsteamworks4j.dylib" }
+          - { os: ubuntu-latest,  tag: linux, files: "java-wrapper/src/main/resources/libsteamworks4j.so" }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # The Steamworks SDK lives in a private repo (too big for a secret). Check it out at ./sdk.
+      - name: Fetch Steamworks SDK
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.SDK_REPO }}
+          token: ${{ secrets.SDK_REPO_TOKEN }}
+          path: sdk-repo
+      - name: Place SDK
+        shell: bash
+        run: |
+          # Expect sdk-repo to contain a top-level "sdk/" (with public/steam + redistributable_bin). Move it to ./sdk.
+          if [ -d sdk-repo/sdk ]; then mv sdk-repo/sdk ./sdk; else mv sdk-repo ./sdk; fi
+          test -f sdk/public/steam/steam_api.h || { echo "::error::SDK headers not found at sdk/public/steam"; exit 1; }
+
+      - name: Install premake5 (Windows/macOS)
+        if: runner.os != 'Linux'
+        shell: bash
+        run: |
+          curl -sL -o premake.zip "https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-${{ runner.os == 'Windows' && 'windows' || 'macosx' }}.zip"
+          if [ "${{ runner.os }}" = "Windows" ]; then unzip -o premake.zip -d build-natives; else unzip -o premake.zip -d build-natives && chmod +x build-natives/premake5; fi
+
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build Windows natives
+        if: runner.os == 'Windows'
+        shell: cmd
+        working-directory: build-natives
+        run: |
+          set PATH=%CD%;%PATH%
+          call build-win.bat vs2022
+
+      - name: Build macOS natives
+        if: runner.os == 'macOS'
+        shell: bash
+        working-directory: build-natives
+        run: |
+          chmod +x build-osx.sh
+          ./build-osx.sh
+
+      - name: Build Linux natives
+        if: runner.os == 'Linux'
+        shell: bash
+        working-directory: build-natives
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y premake4 g++ make
+          chmod +x build-linux.sh
+          ./build-linux.sh
+
+      - name: Collect native(s)
+        shell: bash
+        run: |
+          mkdir -p out
+          for f in ${{ matrix.files }}; do cp "$f" out/; done
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-${{ matrix.tag }}
+          path: out/
+
+  publish:
+    name: Package jars & publish Maven repo
+    needs: natives
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Bundle all natives into resources
+        run: |
+          cp -v artifacts/native-win/*   java-wrapper/src/main/resources/ || true
+          cp -v artifacts/native-osx/*   java-wrapper/src/main/resources/ || true
+          cp -v artifacts/native-linux/* java-wrapper/src/main/resources/ || true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build + stage Maven artifacts (java-wrapper + gdx loader + parent)
+        run: |
+          REPO="$GITHUB_WORKSPACE/maven-repo"
+          # -am pulls the parent pom into the reactor so it is deployed too (downstream needs it to resolve).
+          mvn -B -pl java-wrapper,loader/gdx -am \
+            -P libs -DnoLibs=false -DskipTests -Dgpg.skip=true \
+            deploy -DaltDeploymentRepository="ghpages::default::file://$REPO"
+      - name: Publish Maven repo to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./maven-repo
+          keep_files: true   # accumulate versions so downstream can pin older ones

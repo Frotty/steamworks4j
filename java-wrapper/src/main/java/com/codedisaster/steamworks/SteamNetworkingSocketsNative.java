@@ -16,6 +16,10 @@ final class SteamNetworkingSocketsNative {
 		return (intp) new SteamNetworkingSocketsCallback(env, javaCallback);
 	*/
 
+    public static native void initRelayNetworkAccess();/*
+        SteamNetworkingUtils()->InitRelayNetworkAccess();
+    */
+
     public static native int connectP2P(long steamID, int virtualPort);/*
         SteamNetworkingIdentity identity;
         identity.m_eType = k_ESteamNetworkingIdentityType_SteamID;
@@ -74,6 +78,16 @@ final class SteamNetworkingSocketsNative {
 
     public static native int flushMessages(int connectionHandle);/*
         return SteamNetworkingSockets()->FlushMessagesOnConnection(connectionHandle);
+    */
+
+    public static native int getConnectionPing(int connectionHandle);/*
+        SteamNetConnectionRealTimeStatus_t status;
+        // GetConnectionRealTimeStatus is the modern name (older SDKs: GetQuickConnectionStatus + the *Quick* struct).
+        EResult result = SteamNetworkingSockets()->GetConnectionRealTimeStatus((HSteamNetConnection)connectionHandle, &status, 0, NULL);
+        if (result != k_EResultOK) {
+            return -1;
+        }
+        return status.m_nPing;
     */
 
     public static native void enableSymmetricConnect();/*
