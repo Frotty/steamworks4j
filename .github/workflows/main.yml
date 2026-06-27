@@ -37,12 +37,14 @@ jobs:
         distribution: 'zulu'
         java-version: '21'
         cache: 'maven'
+    # -Dgpg.skip=true: the pom signs artifacts for Maven Central, but CI has no GPG key and doesn't publish here -
+    # it only needs the jars + jnigen output. -DskipTests: wrapper tests would need the natives/Steam, not built yet.
     - name: Install java-wrapper
-      run: mvn -B install --file java-wrapper/pom.xml
+      run: mvn -B install -Dgpg.skip=true -DskipTests --file java-wrapper/pom.xml
     - name: Install server
-      run: mvn -B install --file server/pom.xml
+      run: mvn -B install -Dgpg.skip=true -DskipTests --file server/pom.xml
     - name: Package jnigen
-      run: mvn -B package --file jnigen/pom.xml
+      run: mvn -B package -Dgpg.skip=true -DskipTests --file jnigen/pom.xml
     - name: Run jnigen
       run: java -cp ${{ github.workspace }}/jnigen/target/jnigen.jar com.codedisaster.steamworks.jnigen.JNICodeGenerator
     - name: Upload the result of jnigen for java-wrapper
