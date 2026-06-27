@@ -4,8 +4,9 @@ name: Build natives (jnigen + per-OS) and PR prebuilt binaries
 # only be built on their own platform), and opens a PR committing the fresh prebuilt libraries into the repo. The
 # Steamworks SDK is pulled from the PUBLIC rlabrecque/SteamworksSDK mirror, so no token/secret is needed.
 #
-# After the PR merges, consume the fork either via JitPack at that commit, or by `mvn install`-ing java-wrapper +
-# loader/gdx (Java packaging that bundles these committed binaries - no native build/SDK needed) into vendor/maven.
+# After the PR merges, consume the fork by `mvn install -DnoLibs`-ing java-wrapper + loader/gdx (Java packaging that
+# bundles the committed wrapper natives AND the committed steam_api redistributables - no native build/SDK needed)
+# into vendor/maven. -DnoLibs is required: it disables the `libs` profile, which would otherwise look for the SDK.
 
 on:
   push:
@@ -63,6 +64,23 @@ jobs:
       with:
         name: server-cpp
         path: ${{ github.workspace }}/server/src/main/native/
+    # The built wrapper natives (libsteamworks4j.*) are not self-sufficient: at runtime they dynamically load the
+    # Steam redistributable (steam_api), which must export the flat-API symbols this wrapper was compiled against
+    # (e.g. SteamAPI_ISteamNetworkingSockets_GetConnectionRealTimeStatus, SDK >= 1.55). The `libs` Maven profile
+    # copies these from sdk/redistributable_bin at package time, but that needs the SDK present downstream. Commit
+    # them next to the wrapper natives so a plain `mvn install -DnoLibs` (no SDK) produces a fully bundled jar.
+    - name: Collect the Steam redistributables (steam_api) from the SDK
+      run: |
+        mkdir -p steam-api-out
+        cp sdk/redistributable_bin/linux64/libsteam_api.so steam-api-out/
+        cp sdk/redistributable_bin/osx/libsteam_api.dylib steam-api-out/
+        cp sdk/redistributable_bin/steam_api.dll steam-api-out/
+        cp sdk/redistributable_bin/win64/steam_api64.dll steam-api-out/
+    - name: Upload the Steam redistributables
+      uses: actions/upload-artifact@v4
+      with:
+        name: steam-api-libs
+        path: ${{ github.workspace }}/steam-api-out/
   linux:
     needs: jnigen
     runs-on: ubuntu-latest
@@ -222,6 +240,11 @@ jobs:
       with:
         name: osx-server-libraries
         path: ${{ github.workspace }}/server/src/main/resources/
+    - name: Download the Steam redistributables (steam_api) into the wrapper resources
+      uses: actions/download-artifact@v4
+      with:
+        name: steam-api-libs
+        path: ${{ github.workspace }}/java-wrapper/src/main/resources/
     - name: Create pull request
       uses: peter-evans/create-pull-request@v6
       with:
