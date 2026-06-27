@@ -6,7 +6,7 @@
 
 	<groupId>com.code-disaster.steamworks4j</groupId>
 	<artifactId>steamworks4j-server</artifactId>
-	<version>1.11.0-SNAPSHOT</version>
+	<version>1.11.0-oxrox2</version>
 
 	<packaging>jar</packaging>
 
@@ -114,7 +114,7 @@
 		<dependency>
 			<groupId>com.code-disaster.steamworks4j</groupId>
 			<artifactId>steamworks4j</artifactId>
-			<version>1.11.0-SNAPSHOT</version>
+			<version>1.11.0-oxrox2</version>
 		</dependency>
 	</dependencies>
 
